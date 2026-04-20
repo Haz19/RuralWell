@@ -1,0 +1,145 @@
+.dashboard {
+  min-height: 100vh;
+  background: #f8fafc;
+  padding: 0 0 3rem;
+}
+
+/* Header */
+.dash-header {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dash-header-left h1 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dash-header-left p {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.dash-logout {
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.4rem 0.875rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.dash-logout:hover { border-color: #dc2626; color: #dc2626; }
+
+/* Contenido */
+.dash-body {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Tarjeta de estrés */
+.dash-stress-card {
+  border-radius: 16px;
+  padding: 1.75rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.dash-stress-card.bajo    { background: linear-gradient(135deg, #16a34a, #22c55e); }
+.dash-stress-card.moderado { background: linear-gradient(135deg, #d97706, #f59e0b); }
+.dash-stress-card.alto    { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+.dash-stress-info h2 { font-size: 1rem; opacity: 0.9; margin-bottom: 0.25rem; }
+.dash-stress-info h3 { font-size: 1.5rem; font-weight: 700; }
+.dash-stress-info p  { font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem; }
+.dash-stress-emoji   { font-size: 3rem; }
+
+/* CTA sin perfil */
+.dash-cta-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.dash-cta-card h2 { font-size: 1.25rem; margin-bottom: 0.5rem; color: #111827; }
+.dash-cta-card p  { color: #6b7280; margin-bottom: 1.5rem; }
+.dash-cta-btn {
+  padding: 0.75rem 2rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.dash-cta-btn:hover { background: #1d4ed8; }
+
+/* Acciones */
+.dash-section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dash-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.dash-action-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.25rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.dash-action-card:hover {
+  border-color: #2563eb;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.1);
+  transform: translateY(-2px);
+}
+
+.dash-action-icon { font-size: 1.75rem; }
+.dash-action-card strong { font-size: 0.95rem; color: #111827; }
+.dash-action-card span   { font-size: 0.8rem; color: #6b7280; }
+
+/* Loading */
+.dash-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  color: #6b7280;
+}
+.dash-spinner {
+  width: 36px; height: 36px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
