@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: Sembrando
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/serviciosocial
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  docker:
+    compose:
+      enabled: false
+
+app:
+  jwt:
+    secret: "clave-super-secreta-de-al-menos-256-bits-para-jwt-hmac-sha"
+    expiration: 86400000  # 24 horas en ms
+
+  openai:
+    api-key: "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"
+    model: "openai/gpt-oss-120b"
+    max-tokens: 1000
+    base-url: "https://api.groq.com/openai/v1"
+
+  cors:
+    allowed-origins: "http://localhost:5173"
