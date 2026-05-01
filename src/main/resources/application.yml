@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Sembrando
+    name: RuralWell
 
   datasource:
     url: jdbc:postgresql://localhost:5432/serviciosocial
@@ -27,10 +27,10 @@ app:
     expiration: 86400000  # 24 horas en ms
 
   openai:
-    api-key: "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"
-    model: "openai/gpt-oss-120b"
+    api-key: "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"
+    model: "gpt-4o-mini"
     max-tokens: 1000
-    base-url: "https://api.groq.com/openai/v1"
+    base-url: "https://api.openai.com/v1"
 
   cors:
-    allowed-origins: "http://localhost:5173"
+    allowed-origins: "http://localhost:5173,http://localhost:5174"

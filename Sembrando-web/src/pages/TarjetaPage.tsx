@@ -49,7 +49,7 @@ export default function TarjetaPage() {
         {sinPerfil ? (
           <>
             <div className={`tarjeta-card sin-perfil`}>
-              <span className="tarjeta-label">Sembrando · Bienestar estudiantil</span>
+              <span className="tarjeta-label">RuralWell · Bienestar estudiantil</span>
               <span className="tarjeta-nombre">{perfil?.nombre ?? 'Estudiante'}</span>
               <span className="tarjeta-categoria">Sin evaluar</span>
             </div>
@@ -63,7 +63,7 @@ export default function TarjetaPage() {
         ) : perfil ? (
           <>
             <div className={`tarjeta-card ${categoria}`}>
-              <span className="tarjeta-label">Sembrando · Bienestar estudiantil</span>
+              <span className="tarjeta-label">RuralWell · Bienestar estudiantil</span>
               <span className="tarjeta-nombre">{perfil.nombre}</span>
               {perfil.campoEstudio && (
                 <span className="tarjeta-campo">{perfil.campoEstudio}</span>
