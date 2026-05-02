@@ -45,3 +45,5 @@ out/
 
 ### Proyecto ###
 /ServicioSocial/
+.env
+.env.local

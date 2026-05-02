@@ -35,16 +35,31 @@ Sistema de apoyo al bienestar estudiantil para zonas rurales del Sur Global. Com
 
 ---
 
-## Variables que debes ajustar en `application.yml`
+## Variables de entorno (.env)
 
-```yaml
-app:
-  jwt:
-    secret: "clave-de-al-menos-256-bits-cambiar-en-produccion"
-  openai:
-    api-key: "sk-..."   # Tu API key de OpenAI
-    model: "gpt-4o-mini"
+El proyecto usa variables de entorno para proteger las claves secretas. Crea un archivo `.env` en la raíz del proyecto (nunca se sube a git):
+
+```env
+JWT_SECRET=una-clave-de-al-menos-256-bits
+OPENAI_API_KEY=sk-...
+DB_PASSWORD=postgres
 ```
+
+> **La `OPENAI_API_KEY` es privada.** Solicítala al dueño del repositorio — no se comparte públicamente.
+
+Spring Boot no lee `.env` automáticamente — necesitas cargar las variables en tu shell antes de correr el proyecto.
+
+**Opción A — terminal:**
+```bash
+export $(cat .env | xargs) && ./gradlew bootRun
+```
+
+**Opción B — IntelliJ IDEA:**
+1. Menú **Run > Edit Configurations**
+2. Selecciona la configuración de tu aplicación
+3. En el campo **Environment variables** pega las tres variables en formato `CLAVE=VALOR;CLAVE2=VALOR2`
+
+Si no defines una variable, el sistema usará el valor por defecto definido en `application.yml` (útil para `DB_PASSWORD` en entornos locales estándar).
 
 ---
 
