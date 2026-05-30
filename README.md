@@ -1,127 +1,144 @@
 # RuralWell
 
-Sistema de apoyo al bienestar estudiantil para zonas rurales del Sur Global. Combina un cuestionario de estrés PSS-14, un agente de IA (compañero + tutor académico) y una tarjeta de color por nivel de estrés que puede ser leída por hardware físico de bajo costo.
+A low-cost student wellness platform for the Global South, with an initial focus on rural Mexico. RuralWell identifies when students may be experiencing stress and provides structured support to help them manage it.
+
+The system combines a validated stress questionnaire (PSS-14), a context-aware AI companion, and a physical student card that can be read by a low-cost hardware sensor.
 
 ---
 
-## Requisitos previos
+## Architecture
 
-| Herramienta | Versión mínima |
-|---|---|
+```
+[React Frontend]  ──REST/JSON + JWT──►  [Spring Boot API]  ──►  [PostgreSQL]
+                                               │
+                                               └──────────────►  [OpenAI API]
+
+[Hardware sensor]  ──GET /api/hardware/perfil/{code}──►  [Spring Boot API]
+```
+
+### Backend endpoints
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/api/auth/register` | No | Create a new account |
+| POST | `/api/auth/login` | No | Sign in — returns a JWT |
+| POST | `/api/cuestionario/responder` | Yes | Submit PSS-14 responses |
+| GET | `/api/cuestionario/historial` | Yes | Fetch assessment history |
+| POST | `/api/chat/stream` | Yes | Send a message to the AI companion (SSE streaming) |
+| GET | `/api/tarjeta` | Yes | Get the student's wellness card data |
+| GET | `/api/perfil` | Yes | Get the authenticated user's profile |
+| GET | `/api/hardware/perfil/{code}` | No | Public endpoint for the hardware sensor |
+
+---
+
+## Requirements
+
+| Tool | Minimum version |
+|------|----------------|
 | JDK | 21 |
 | Kotlin | 2.0 |
-| Gradle | 8.x (wrapper incluido) |
+| Gradle | 8.x (wrapper included) |
 | Node.js | 20 LTS |
 | npm | 10 |
 | PostgreSQL | 15 |
 
 ---
 
-## Configuración de la base de datos
+## Environment variables
 
-1. Crea la base de datos:
-   ```sql
-   CREATE DATABASE serviciosocial;
-   ```
-2. El usuario por defecto es `postgres` con contraseña `postgres`. Puedes cambiarlo en `src/main/resources/application.yml`:
-   ```yaml
-   spring:
-     datasource:
-       url: jdbc:postgresql://localhost:5432/serviciosocial
-       username: postgres
-       password: TU_PASSWORD
-   ```
-3. Las tablas se crean automáticamente al iniciar el backend (`ddl-auto: update`).
-
----
-
-## Variables de entorno (.env)
-
-El proyecto usa variables de entorno para proteger las claves secretas. Crea un archivo `.env` en la raíz del proyecto (nunca se sube a git):
+Create a `.env` file at the project root (never committed to git):
 
 ```env
-JWT_SECRET=una-clave-de-al-menos-256-bits
 OPENAI_API_KEY=sk-...
-DB_PASSWORD=postgres
+JWT_SECRET=a-random-string-of-at-least-256-bits
+DB_PASSWORD=your_postgres_password
 ```
 
-> **La `OPENAI_API_KEY` es privada.** Solicítala al dueño del repositorio — no se comparte públicamente.
-
-Spring Boot no lee `.env` automáticamente — necesitas cargar las variables en tu shell antes de correr el proyecto.
-
-**Opción A — terminal:**
-```bash
-export $(cat .env | xargs) && ./gradlew bootRun
-```
-
-**Opción B — IntelliJ IDEA:**
-1. Menú **Run > Edit Configurations**
-2. Selecciona la configuración de tu aplicación
-3. En el campo **Environment variables** pega las tres variables en formato `CLAVE=VALOR;CLAVE2=VALOR2`
-
-Si no defines una variable, el sistema usará el valor por defecto definido en `application.yml` (útil para `DB_PASSWORD` en entornos locales estándar).
+The backend reads this file automatically on startup. If a variable is not defined, the default value from `application.yml` is used — `DB_PASSWORD` defaults to `postgres` for local development.
 
 ---
 
-## Echar a andar el backend
+## Database setup
+
+```sql
+CREATE DATABASE serviciosocial;
+```
+
+Tables are created automatically by Hibernate on first run (`ddl-auto: update`).
+
+---
+
+## Running the backend
 
 ```bash
-# Desde la raíz del proyecto
 ./gradlew bootRun
 ```
 
-El servidor queda escuchando en `http://localhost:8080`.
+The API will be available at `http://localhost:8080`.
 
 ---
 
-## Echar a andar el frontend
+## Running the frontend
 
 ```bash
 cd Sembrando-web
-npm install        # solo la primera vez
+npm install
 npm run dev
 ```
 
-La app queda en `http://localhost:5173` (o 5174 si el puerto está ocupado).
+The app will be available at `http://localhost:5173`.
 
 ---
 
-## Estructura del proyecto
+## Project structure
 
 ```
-/                        ← Backend (Spring Boot / Kotlin)
-├── src/main/kotlin/     ← Código fuente
-│   └── ss/serviciosocial/
-│       ├── config/      ← SecurityConfig, AppProperties
-│       ├── controller/  ← Auth, Cuestionario, Chat, Tarjeta, Hardware
-│       ├── service/     ← Lógica de negocio
-│       ├── model/       ← Entidades JPA
-│       ├── repository/  ← Spring Data JPA
-│       ├── security/    ← JWT (JwtFilter, JwtUtil)
-│       └── dto/         ← DTOs de request/response
+/                               ← Backend (Spring Boot / Kotlin)
+├── src/main/kotlin/ss/serviciosocial/
+│   ├── config/                 ← Security, CORS, app properties
+│   ├── controller/             ← REST controllers
+│   ├── service/                ← Business logic, OpenAI integration
+│   ├── model/                  ← JPA entities
+│   ├── repository/             ← Spring Data repositories
+│   ├── security/               ← JWT filter and utilities
+│   └── dto/                    ← Request / response DTOs
 ├── src/main/resources/
 │   ├── application.yml
 │   └── prompts/
-│       └── system-prompt.txt   ← Prompt del agente IA
+│       └── system-prompt.txt   ← AI companion system prompt
 └── Sembrando-web/              ← Frontend (React + Vite + TypeScript)
     └── src/
-        ├── pages/       ← Login, Register, Cuestionario, Dashboard, Chat, Tarjeta, Historial
-        ├── services/    ← Llamadas al API
-        └── types/       ← Tipos TypeScript
+        ├── pages/              ← Login, Register, Dashboard, Chat, Card, History
+        ├── components/         ← Shared UI components
+        ├── styles/             ← CSS modules per page
+        ├── api/                ← API client functions
+        ├── context/            ← Auth context
+        └── types/              ← TypeScript type definitions
 ```
 
 ---
 
-## Endpoints principales
+## Stress assessment — PSS-14
 
-| Método | Ruta | Auth | Descripción |
-|---|---|---|---|
-| POST | `/api/auth/register` | No | Registro de usuario |
-| POST | `/api/auth/login` | No | Login → devuelve JWT |
-| POST | `/api/cuestionario/responder` | Sí | Enviar respuestas PSS-14 |
-| GET | `/api/cuestionario/historial` | Sí | Historial de cuestionarios |
-| POST | `/api/chat` | Sí | Mensaje al agente (síncrono) |
-| GET | `/api/chat/stream` | Sí | Mensaje al agente (SSE streaming) |
-| GET | `/api/tarjeta` | Sí | Perfil + color de estrés |
-| GET | `/api/perfil` | Sí | Datos del usuario autenticado |
-| GET | `/api/hardware/perfil/{codigo}` | No | Perfil para sensor físico |
+The platform uses the **Perceived Stress Scale (PSS-14)** by Cohen, Kamarck & Mermelstein (1983), adapted for students.
+
+- 14 items, scored 0–4 (Never → Very often)
+- Items 4, 5, 6, 7, 9, 10, 13 are reverse-scored
+- Score ranges: **Low** 0–19 · **Moderate** 20–25 · **High** 26–56
+
+The stress score determines the color of the student's physical card and the tone of the AI companion's responses.
+
+---
+
+## AI companion
+
+The companion is powered by GPT-4o-mini via the OpenAI API. Each request includes:
+
+- The student's name and field of study
+- Current stress level and category
+- The three most recent PSS-14 results
+- Detailed responses from the latest assessment
+
+When stress is classified as **high**, the companion suggests connecting with a volunteer psychologist through a familiar channel (e.g. WhatsApp).
+
+The system prompt is defined in `src/main/resources/prompts/system-prompt.txt` and can be updated without recompiling.

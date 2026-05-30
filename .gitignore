@@ -47,3 +47,5 @@ out/
 /ServicioSocial/
 .env
 .env.local
+.claude/
+package-lock.json
