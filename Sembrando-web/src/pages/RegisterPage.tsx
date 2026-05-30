@@ -28,7 +28,7 @@ export default function RegisterPage() {
       saveAuth(data)
       navigate('/cuestionario')
     } catch (err: any) {
-      setError(err.response?.data?.mensaje ?? 'Error al registrarse')
+      setError(err.response?.data?.mensaje ?? 'Error creating account')
     } finally {
       setLoading(false)
     }
@@ -37,23 +37,23 @@ export default function RegisterPage() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>Crear cuenta</h1>
+        <h1>Create account</h1>
         <form onSubmit={handleSubmit}>
-          <label>Nombre completo</label>
+          <label>Full name</label>
           <input
             type="text"
             value={form.nombre}
             onChange={(e) => setForm({ ...form, nombre: e.target.value })}
             required
           />
-          <label>Correo electrónico</label>
+          <label>Email address</label>
           <input
             type="email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
           />
-          <label>Contraseña</label>
+          <label>Password</label>
           <input
             type="password"
             value={form.password}
@@ -61,20 +61,20 @@ export default function RegisterPage() {
             required
             minLength={6}
           />
-          <label>Campo de estudio (opcional)</label>
+          <label>Field of study (optional)</label>
           <input
             type="text"
-            placeholder="Ej. Ingeniería, Medicina, Derecho..."
+            placeholder="E.g. Engineering, Medicine, Law..."
             value={form.campoEstudio}
             onChange={(e) => setForm({ ...form, campoEstudio: e.target.value })}
           />
           {error && <p className="error">{error}</p>}
           <button type="submit" disabled={loading}>
-            {loading ? 'Creando cuenta...' : 'Registrarse'}
+            {loading ? 'Creating account...' : 'Sign up'}
           </button>
         </form>
         <p>
-          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
+          Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </div>
     </div>

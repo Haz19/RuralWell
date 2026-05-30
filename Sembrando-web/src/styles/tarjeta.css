@@ -1,18 +1,21 @@
 .tarjeta-page {
   min-height: 100dvh;
-  background: #f8fafc;
+  background-color: var(--color-surface);
+  background-image: var(--bg-diamond-pattern);
   display: flex;
   flex-direction: column;
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-body);
+  padding-bottom: 5rem; /* BottomNav */
 }
 
+/* ── Header ── */
 .tarjeta-header {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--color-surface-card);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .tarjeta-back {
@@ -21,18 +24,25 @@
   font-size: 20px;
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   line-height: 1;
+  color: var(--color-text-muted);
+  transition: background 0.15s, color 0.15s;
 }
-.tarjeta-back:hover { background: #f0f0f0; }
+.tarjeta-back:hover {
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
 
 .tarjeta-header h1 {
+  font-family: var(--font-heading);
   font-size: 17px;
-  font-weight: 600;
-  color: #111827;
+  font-weight: 400;
+  color: var(--color-primary);
   margin: 0;
 }
 
+/* ── Body ── */
 .tarjeta-body {
   flex: 1;
   display: flex;
@@ -40,123 +50,160 @@
   align-items: center;
   justify-content: center;
   padding: 2rem 1.5rem;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
-/* Tarjeta de color */
+/* ── Tarjeta principal ── */
 .tarjeta-card {
   width: 100%;
-  max-width: 360px;
-  border-radius: 24px;
-  padding: 2.5rem 2rem;
+  max-width: 340px;
+  border-radius: var(--radius-xl);
+  padding: 2rem 1.75rem;
   color: #fff;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  gap: 0.75rem;
+  box-shadow: var(--shadow-card-lg);
   position: relative;
   overflow: hidden;
+  animation: cardEntrance 0.55s var(--ease-emerge) both;
 }
 
+/* Patrón geométrico */
 .tarjeta-card::before {
   content: '';
   position: absolute;
-  top: -40px; right: -40px;
-  width: 160px; height: 160px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpolygon points='16,3 29,16 16,29 3,16' fill='none' stroke='rgba(255,255,255,0.11)' stroke-width='1.5'/%3E%3Cpolygon points='16,9 23,16 16,23 9,16' fill='rgba(255,255,255,0.04)' stroke='none'/%3E%3C/svg%3E");
+  background-size: 32px 32px;
+  pointer-events: none;
 }
 
-.tarjeta-card::after {
-  content: '';
-  position: absolute;
-  bottom: -60px; left: -30px;
-  width: 200px; height: 200px;
+.tarjeta-card.bajo      { background: linear-gradient(140deg, #0D6E52, #1A9970); }
+.tarjeta-card.moderado  { background: linear-gradient(140deg, #B5600A, #D4850A); }
+.tarjeta-card.alto      { background: linear-gradient(140deg, #A83210, #C1440E); }
+.tarjeta-card.sin-perfil { background: linear-gradient(140deg, #5C5C7A, #8A8AA5); }
+
+/* ── Avatar dentro de la tarjeta ── */
+.tarjeta-avatar-wrap {
+  position: relative; z-index: 1;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.07);
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
 }
 
-.tarjeta-card.bajo     { background: linear-gradient(135deg, #16a34a, #22c55e); }
-.tarjeta-card.moderado { background: linear-gradient(135deg, #d97706, #f59e0b); }
-.tarjeta-card.alto     { background: linear-gradient(135deg, #dc2626, #ef4444); }
-.tarjeta-card.sin-perfil { background: linear-gradient(135deg, #6b7280, #9ca3af); }
+.tarjeta-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
 
+/* ── Texto de la tarjeta ── */
 .tarjeta-label {
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.65rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  opacity: 0.8;
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+  position: relative; z-index: 1;
 }
 
 .tarjeta-nombre {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 400;
   line-height: 1.2;
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
 }
 
 .tarjeta-campo {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   opacity: 0.85;
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
+}
+
+.tarjeta-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  margin: 0.25rem 0;
+  position: relative; z-index: 1;
 }
 
 .tarjeta-nivel-row {
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  position: relative;
-  z-index: 1;
+  gap: 0.375rem;
+  position: relative; z-index: 1;
 }
 
 .tarjeta-nivel-num {
+  font-family: var(--font-heading);
   font-size: 2.5rem;
-  font-weight: 800;
+  font-weight: 400;
   line-height: 1;
 }
 
 .tarjeta-nivel-max {
   font-size: 1rem;
-  opacity: 0.7;
+  opacity: 0.65;
 }
 
 .tarjeta-categoria {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  text-transform: capitalize;
   opacity: 0.9;
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
+  letter-spacing: 0.02em;
 }
 
-/* Descripción debajo de la tarjeta */
+/* ── Descripción ── */
 .tarjeta-desc {
-  max-width: 360px;
+  max-width: 340px;
   text-align: center;
-  font-size: 0.9rem;
-  color: #6b7280;
-  line-height: 1.5;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
 }
 
-/* Botón de actualizar */
+/* ── Botones ── */
 .tarjeta-btn {
+  width: 100%;
+  max-width: 340px;
   padding: 0.75rem 2rem;
-  background: #2563eb;
+  background: var(--color-primary);
   color: #fff;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s var(--ease-flow), transform 0.2s var(--ease-emerge), box-shadow 0.2s;
 }
-.tarjeta-btn:hover { background: #1d4ed8; }
+.tarjeta-btn:hover {
+  background: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(13,110,82,0.25);
+}
 
-/* Loading */
+.tarjeta-btn-print {
+  background: none;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+}
+.tarjeta-btn-print:hover {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  box-shadow: none;
+}
+
+/* ── Loading ── */
 .tarjeta-loading {
   flex: 1;
   display: flex;
@@ -164,13 +211,55 @@
   justify-content: center;
   flex-direction: column;
   gap: 1rem;
-  color: #6b7280;
+  color: var(--color-text-muted);
 }
 .tarjeta-spinner {
   width: 36px; height: 36px;
-  border: 3px solid #e5e7eb;
-  border-top-color: #2563eb;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.9s var(--ease-flow) infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Print ── */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body,
+  .tarjeta-page,
+  .tarjeta-body { background: white !important; }
+
+  .tarjeta-header,
+  .tarjeta-desc,
+  .tarjeta-btn,
+  .bottom-nav { display: none !important; }
+
+  .tarjeta-page {
+    padding: 0 !important;
+    min-height: unset !important;
+    height: auto !important;
+  }
+
+  .tarjeta-body {
+    flex: unset !important;
+    padding: 2rem !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    gap: 0 !important;
+    height: auto !important;
+    min-height: unset !important;
+  }
+
+  .tarjeta-card {
+    max-width: 320px !important;
+    box-shadow: none !important;
+    animation: none !important;
+    page-break-inside: avoid;
+  }
+}

@@ -6,56 +6,56 @@ import type { CuestionarioResponse } from '../types/cuestionario'
 import '../styles/questionnaire.css'
 
 const PREGUNTAS = [
-  'En el último mes, ¿con qué frecuencia te has sentido afectado por algo que ocurrió inesperadamente?',
-  'En el último mes, ¿con qué frecuencia te has sentido incapaz de controlar las cosas importantes en tu vida?',
-  'En el último mes, ¿con qué frecuencia te has sentido nervioso o estresado?',
-  'En el último mes, ¿con qué frecuencia has manejado con éxito los pequeños problemas irritantes de la vida?',
-  'En el último mes, ¿con qué frecuencia has sentido que has afrontado efectivamente los cambios importantes en tu vida?',
-  'En el último mes, ¿con qué frecuencia has estado seguro sobre tu capacidad para manejar tus problemas personales?',
-  'En el último mes, ¿con qué frecuencia has sentido que las cosas van bien?',
-  'En el último mes, ¿con qué frecuencia has sentido que no podías afrontar todas las cosas que tenías que hacer?',
-  'En el último mes, ¿con qué frecuencia has podido controlar las dificultades de tu vida?',
-  'En el último mes, ¿con qué frecuencia has sentido que tenías todo bajo control?',
-  'En el último mes, ¿con qué frecuencia has estado enfadado porque las cosas que te han ocurrido estaban fuera de tu control?',
-  'En el último mes, ¿con qué frecuencia has pensado sobre las cosas que te faltan por hacer?',
-  'En el último mes, ¿con qué frecuencia has podido controlar la forma de pasar el tiempo?',
-  'En el último mes, ¿con qué frecuencia has sentido que las dificultades se acumulan tanto que no puedes superarlas?',
+  'In the last month, how often have you been upset because of something that happened unexpectedly?',
+  'In the last month, how often have you felt unable to control the important things in your life?',
+  'In the last month, how often have you felt nervous and stressed?',
+  'In the last month, how often have you dealt successfully with irritating life hassles?',
+  'In the last month, how often have you felt that you were effectively coping with important changes in your life?',
+  'In the last month, how often have you felt confident about your ability to handle your personal problems?',
+  'In the last month, how often have you felt that things were going your way?',
+  'In the last month, how often have you found that you could not cope with all the things you had to do?',
+  'In the last month, how often have you been able to control irritations in your life?',
+  'In the last month, how often have you felt that you were on top of things?',
+  'In the last month, how often have you been angered because of things that were outside of your control?',
+  'In the last month, how often have you found yourself thinking about things you have to accomplish?',
+  'In the last month, how often have you been able to control the way you spend your time?',
+  'In the last month, how often have you felt difficulties were piling up so high that you could not overcome them?',
 ]
 
 const OPCIONES = [
-  { valor: 0, etiqueta: 'Nunca' },
-  { valor: 1, etiqueta: 'Casi nunca' },
-  { valor: 2, etiqueta: 'De vez en cuando' },
-  { valor: 3, etiqueta: 'A menudo' },
-  { valor: 4, etiqueta: 'Muy a menudo' },
+  { valor: 0, etiqueta: 'Never' },
+  { valor: 1, etiqueta: 'Almost never' },
+  { valor: 2, etiqueta: 'Sometimes' },
+  { valor: 3, etiqueta: 'Fairly often' },
+  { valor: 4, etiqueta: 'Very often' },
 ]
 
 const NIVELES = {
   bajo: {
-    titulo: 'Estrés bajo',
-    descripcion: 'Tu nivel de estrés es manejable. Sigue con tus hábitos y mantén el equilibrio.',
-    color: '#16a34a',
+    titulo: 'Low Stress',
+    descripcion: 'Your stress level is manageable. Keep up your good habits and stay balanced.',
+    color: '#2E7D59',
   },
   moderado: {
-    titulo: 'Estrés moderado',
-    descripcion: 'Estás sintiendo algo de presión. Pequeños cambios en tu rutina pueden ayudarte mucho.',
-    color: '#d97706',
+    titulo: 'Moderate Stress',
+    descripcion: 'You are feeling some pressure. Small changes in your routine can make a big difference.',
+    color: '#F2B705',
   },
   alto: {
-    titulo: 'Estrés alto',
-    descripcion: 'Tu nivel de estrés es elevado. Estamos aquí para apoyarte — no estás solo.',
-    color: '#dc2626',
+    titulo: 'High Stress',
+    descripcion: 'Your stress level is elevated. You are not alone — we are here to support you.',
+    color: '#E53935',
   },
 }
 
 const FUNCIONES = [
-  { titulo: 'Compañero de IA', desc: 'Chatea con tu agente personal de bienestar cuando lo necesites' },
-  { titulo: 'Seguimiento', desc: 'Revisa tu historial de estrés y detecta patrones a lo largo del tiempo' },
-  { titulo: 'Tarjeta de perfil', desc: 'Tu tarjeta digital con QR para acceder a recursos en el sistema físico' },
+  { titulo: 'AI Companion', desc: 'Chat with your personal wellness companion whenever you need' },
+  { titulo: 'Tracking and Transparency', desc: 'Check your stress history' },
+  { titulo: 'Your Wellness Card', desc: 'Your personal card shows your wellness level and connects you to support resources' },
 ]
 
 export default function QuestionnairePage() {
-  const { user } = useAuth()
+  const { user, perfilCompleto, completarPerfil } = useAuth()
   const navigate = useNavigate()
 
   const [indice, setIndice] = useState(0)
@@ -82,9 +82,10 @@ export default function QuestionnairePage() {
         setEnviando(true)
         try {
           const res = await responderCuestionario(nuevas)
+          completarPerfil()
           setResultado(res)
         } catch {
-          setError('No se pudo guardar el cuestionario. Intenta de nuevo.')
+          setError('Could not save the questionnaire. Please try again.')
         } finally {
           setEnviando(false)
           setAnimando(false)
@@ -97,7 +98,7 @@ export default function QuestionnairePage() {
     return (
       <div className="q-loading">
         <div className="q-spinner" />
-        <p>Calculando tu perfil de estrés...</p>
+        <p>Calculating your stress profile...</p>
       </div>
     )
   }
@@ -110,12 +111,12 @@ export default function QuestionnairePage() {
           <h1 style={{ color: nivel.color }}>{nivel.titulo}</h1>
           <p className="q-result-desc">{nivel.descripcion}</p>
           <div className="q-score-badge" style={{ borderColor: nivel.color, color: nivel.color }}>
-            Puntaje PSS-14: {resultado.puntaje} / 56
+            PSS-14 Score: {resultado.puntaje} / 56
           </div>
 
           <div className="q-divider" />
 
-          <h2>Esto es lo que puedes hacer aquí</h2>
+          <h2>Here's what you can do</h2>
           <div className="q-features">
             {FUNCIONES.map((f) => (
               <div key={f.titulo} className="q-feature-card">
@@ -128,11 +129,20 @@ export default function QuestionnairePage() {
           {error && <p className="error">{error}</p>}
 
           <button className="q-cta-btn" onClick={() => navigate('/dashboard')}>
-            Comenzar
+            Get Started
           </button>
         </div>
       </div>
     )
+  }
+
+  const retroceder = () => {
+    if (indice === 0) {
+      if (perfilCompleto) navigate('/dashboard')
+      // si no tiene perfil, no puede salir — debe completar el cuestionario
+    } else {
+      setIndice(indice - 1)
+    }
   }
 
   return (
@@ -141,14 +151,20 @@ export default function QuestionnairePage() {
         <div className="q-progress-fill" style={{ width: `${progreso}%` }} />
       </div>
 
-      <div className="q-counter">
-        {indice + 1} / {PREGUNTAS.length}
+      <div className="q-topbar">
+        <button className="q-back-btn" onClick={retroceder} disabled={animando}>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="11 4 5 9 11 14"/>
+          </svg>
+        </button>
+        <div className="q-counter">{indice + 1} / {PREGUNTAS.length}</div>
+        <div className="q-back-btn" style={{ visibility: 'hidden' }} />
       </div>
 
       <div className={`q-card ${animando ? 'q-card--saliendo' : 'q-card--entrando'}`}>
-        <p className="q-intro">En el último mes...</p>
+        <p className="q-intro">In the last month...</p>
         <h2 className="q-pregunta">
-          {PREGUNTAS[indice].replace('En el último mes, ', '')}
+          {PREGUNTAS[indice].replace('In the last month, ', '')}
         </h2>
 
         <div className="q-opciones">
@@ -165,7 +181,6 @@ export default function QuestionnairePage() {
         </div>
       </div>
 
-      <p className="q-nombre">Hola, {user?.nombre?.split(' ')[0]}</p>
     </div>
   )
 }

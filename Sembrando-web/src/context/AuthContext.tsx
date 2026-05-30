@@ -3,7 +3,9 @@ import type { AuthUser } from '../types/auth'
 
 interface AuthContextType {
   user: AuthUser | null
+  perfilCompleto: boolean
   saveAuth: (user: AuthUser) => void
+  completarPerfil: () => void
   logout: () => void
 }
 
@@ -17,6 +19,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return token && nombre && email ? { token, nombre, email } : null
   })
 
+  const [perfilCompleto, setPerfilCompleto] = useState<boolean>(
+    () => localStorage.getItem('perfilCompleto') === 'true'
+  )
+
   const saveAuth = (u: AuthUser) => {
     localStorage.setItem('token', u.token)
     localStorage.setItem('nombre', u.nombre)
@@ -24,13 +30,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(u)
   }
 
+  const completarPerfil = () => {
+    localStorage.setItem('perfilCompleto', 'true')
+    setPerfilCompleto(true)
+  }
+
   const logout = () => {
     localStorage.clear()
     setUser(null)
+    setPerfilCompleto(false)
   }
 
   return (
-    <AuthContext.Provider value={{ user, saveAuth, logout }}>
+    <AuthContext.Provider value={{ user, perfilCompleto, saveAuth, completarPerfil, logout }}>
       {children}
     </AuthContext.Provider>
   )

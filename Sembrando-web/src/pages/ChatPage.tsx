@@ -8,7 +8,7 @@ const STORAGE_KEY = 'chat_history'
 const API_BASE = 'http://localhost:8080'
 
 const SALUDO = (nombre: string) =>
-  `Hola, ${nombre.split(' ')[0]}. Soy tu compañero de bienestar. ¿Cómo estás hoy?`
+  `Hi, ${nombre.split(' ')[0]}! I'm Yólotl, your wellness companion. How are you feeling today?`
 
 const cargarHistorial = (nombre: string): ChatMessage[] => {
   try {
@@ -103,7 +103,7 @@ export default function ChatPage() {
         }
       }
     } catch {
-      setError('No se pudo conectar con el agente. Intenta de nuevo.')
+      setError('Could not connect to the agent. Please try again.')
       // Elimina la burbuja vacía del agente si no llegó nada
       setMensajes(prev =>
         prev[prev.length - 1]?.content === '' ? prev.slice(0, -1) : prev
@@ -132,22 +132,41 @@ export default function ChatPage() {
   return (
     <div className="chat-page">
       <header className="chat-header">
-        <button className="chat-back" onClick={() => navigate('/dashboard')}>←</button>
+        <button className="chat-back" onClick={() => navigate('/dashboard')}>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="11 4 5 9 11 14"/>
+          </svg>
+        </button>
+        <img src="/chatAvatar.png" className="chat-header-avatar" alt="Yólotl" />
         <div>
-          <h1>Tu compañero</h1>
-          <p>Aquí para apoyarte</p>
+          <h1>Yólotl</h1>
+          <p>Your wellness companion</p>
         </div>
       </header>
 
       <div className="chat-messages">
         {mensajes.map((m, i) =>
           m.content ? (
-            <div key={i} className={`chat-bubble ${m.role}`}>
-              {m.content}
-            </div>
+            m.role === 'assistant' ? (
+              <div key={i} className="chat-assistant-row">
+                <img src="/chatAvatar.png" className="chat-avatar" alt="Yólotl" />
+                <div className="chat-bubble assistant">{m.content}</div>
+              </div>
+            ) : (
+              <div key={i} className="chat-bubble user">{m.content}</div>
+            )
           ) : null
         )}
-        {ultimoVacio && <div className="chat-typing">Escribiendo...</div>}
+        {ultimoVacio && (
+          <div className="chat-assistant-row">
+            <img src="/chatAvatar.png" className="chat-avatar" alt="Yólotl" />
+            <div className="chat-typing">
+              <span className="chat-typing-dot" />
+              <span className="chat-typing-dot" />
+              <span className="chat-typing-dot" />
+            </div>
+          </div>
+        )}
         {error && <div className="chat-error">{error}</div>}
         <div ref={bottomRef} />
       </div>
@@ -159,7 +178,7 @@ export default function ChatPage() {
         <textarea
           ref={textareaRef}
           className="chat-input"
-          placeholder="Escribe algo..."
+          placeholder="Type something..."
           value={input}
           onChange={handleInput}
           onKeyDown={handleKeyDown}

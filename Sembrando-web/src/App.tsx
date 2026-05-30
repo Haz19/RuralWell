@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
-import ProtectedRoute from './components/ProtectedRoute'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import type { ReactNode } from 'react'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import QuestionnairePage from './pages/QuestionnairePage'
@@ -8,6 +8,18 @@ import DashboardPage from './pages/DashboardPage'
 import ChatPage from './pages/ChatPage'
 import TarjetaPage from './pages/TarjetaPage'
 import HistorialPage from './pages/HistorialPage'
+
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
+  return user ? <>{children}</> : <Navigate to="/login" replace />
+}
+
+function RequiresProfile({ children }: { children: ReactNode }) {
+  const { user, perfilCompleto } = useAuth()
+  if (!user) return <Navigate to="/login" replace />
+  if (!perfilCompleto) return <Navigate to="/cuestionario" replace />
+  return <>{children}</>
+}
 
 export default function App() {
   return (
@@ -27,33 +39,33 @@ export default function App() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <RequiresProfile>
                 <DashboardPage />
-              </ProtectedRoute>
+              </RequiresProfile>
             }
           />
           <Route
             path="/chat"
             element={
-              <ProtectedRoute>
+              <RequiresProfile>
                 <ChatPage />
-              </ProtectedRoute>
+              </RequiresProfile>
             }
           />
           <Route
             path="/tarjeta"
             element={
-              <ProtectedRoute>
+              <RequiresProfile>
                 <TarjetaPage />
-              </ProtectedRoute>
+              </RequiresProfile>
             }
           />
           <Route
             path="/historial"
             element={
-              <ProtectedRoute>
+              <RequiresProfile>
                 <HistorialPage />
-              </ProtectedRoute>
+              </RequiresProfile>
             }
           />
           <Route path="*" element={<Navigate to="/login" replace />} />

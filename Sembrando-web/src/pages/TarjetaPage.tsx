@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getPerfil } from '../api/perfil'
 import type { PerfilResponse } from '../types/perfil'
+import BottomNav from '../components/BottomNav'
 import '../styles/tarjeta.css'
 
 const NIVEL_DESC = {
-  bajo:     'Tu nivel de estrés es manejable. Sigue con tus hábitos positivos.',
-  moderado: 'Sientes algo de presión. Pequeños cambios pueden hacer una gran diferencia.',
-  alto:     'Tu nivel es elevado. Recuerda que no estás solo/a, estamos aquí para apoyarte.',
+  bajo:     'Your stress level is manageable. Keep up your positive habits.',
+  moderado: 'You feel some pressure. Small changes can make a big difference.',
+  alto:     "Your level is elevated. Remember you're not alone — we're here to support you.",
 }
 
 export default function TarjetaPage() {
@@ -28,7 +29,7 @@ export default function TarjetaPage() {
       <div className="tarjeta-page">
         <div className="tarjeta-loading">
           <div className="tarjeta-spinner" />
-          <p>Cargando tu tarjeta...</p>
+          <p>Loading your card...</p>
         </div>
       </div>
     )
@@ -41,46 +42,58 @@ export default function TarjetaPage() {
   return (
     <div className="tarjeta-page">
       <header className="tarjeta-header">
-        <button className="tarjeta-back" onClick={() => navigate('/dashboard')}>←</button>
-        <h1>Mi tarjeta</h1>
+        <h1>My card</h1>
       </header>
 
       <div className="tarjeta-body">
         {sinPerfil ? (
           <>
-            <div className={`tarjeta-card sin-perfil`}>
-              <span className="tarjeta-label">RuralWell · Bienestar estudiantil</span>
-              <span className="tarjeta-nombre">{perfil?.nombre ?? 'Estudiante'}</span>
-              <span className="tarjeta-categoria">Sin evaluar</span>
+            <div className="tarjeta-card sin-perfil">
+              <div className="tarjeta-avatar-wrap">
+                <img src="/tarjetaAvatar.png" alt="Avatar" className="tarjeta-avatar" />
+              </div>
+              <span className="tarjeta-label">RuralWell · Student Wellness</span>
+              <span className="tarjeta-nombre">{perfil?.nombre ?? 'Student'}</span>
+              <span className="tarjeta-categoria">Not yet evaluated</span>
             </div>
             <p className="tarjeta-desc">
-              Responde el cuestionario PSS-14 para ver tu nivel de estrés reflejado aquí.
+              Complete the PSS-14 questionnaire to see your stress level reflected here.
             </p>
             <button className="tarjeta-btn" onClick={() => navigate('/cuestionario')}>
-              Hacer el cuestionario
+              Take the questionnaire
             </button>
           </>
         ) : perfil ? (
           <>
             <div className={`tarjeta-card ${categoria}`}>
-              <span className="tarjeta-label">RuralWell · Bienestar estudiantil</span>
+              <div className="tarjeta-avatar-wrap">
+                <img src="/tarjetaAvatar.png" alt="Avatar" className="tarjeta-avatar" />
+              </div>
+              <span className="tarjeta-label">RuralWell · Student Wellness</span>
               <span className="tarjeta-nombre">{perfil.nombre}</span>
               {perfil.campoEstudio && (
                 <span className="tarjeta-campo">{perfil.campoEstudio}</span>
               )}
+              <div className="tarjeta-divider" />
               <div className="tarjeta-nivel-row">
                 <span className="tarjeta-nivel-num">{nivel}</span>
                 <span className="tarjeta-nivel-max">/10</span>
               </div>
-              <span className="tarjeta-categoria">Estrés {perfil.categoriaEstres}</span>
+              <span className="tarjeta-categoria">
+                {perfil.categoriaEstres.charAt(0).toUpperCase() + perfil.categoriaEstres.slice(1)} stress
+              </span>
             </div>
             {desc && <p className="tarjeta-desc">{desc}</p>}
             <button className="tarjeta-btn" onClick={() => navigate('/cuestionario')}>
-              Actualizar evaluación
+              Update assessment
+            </button>
+            <button className="tarjeta-btn tarjeta-btn-print" onClick={() => window.print()}>
+              Print / Save as PDF
             </button>
           </>
         ) : null}
       </div>
+      <BottomNav />
     </div>
   )
 }
